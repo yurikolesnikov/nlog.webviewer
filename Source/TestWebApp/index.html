@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Test Web app for NLog.WebViewer</title>
+    <style>
+        body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+        code { white-space: pre; }
+    </style>
+</head>
+<body>
+<h1>NLog WebViewer</h1>
+<a href="Logs">Show test logs</a>
+<p>Web interface for viewing NLog files with specific format on remote server.</p>
+<h2>Usage sample</h2>
+<p>Add in web.config <i>configSections</i></p>
+<code>&lt;section name="nlog.webviewer" type="NLog.WebViewer.Config, NLog.WebViewer" /&gt;</code>
+<p>Sample configuration section:</p>
+<code>&lt;nlog.webviewer fields="Date|Level|Logger|IpAddress|Message"
+                separator="|"
+                fileformat="{0:yyyy-MM-dd}.txt"
+                path="~/App_Data/Logs" /&gt;
+</code>
+<p>is valid for following NLog target:</p>
+<code>&lt;target name="logfile" type="File" encoding="utf-8"
+        filename="${basedir}/App_Data/Logs/${shortdate}.txt"
+        layout="${longdate}|${uppercase:${level}}|${logger}|${aspnet-request:serverVariable=remote_addr}|${message}${onexception:${newline}${exception:format=tostring}}" /&gt;
+</code>
+<p>Following handler in <i>system.webServer\handlers</i> could be used to access logs page:</p>
+<code>&lt;add name="LogsViewHandler" verb="*" path="Logs.axd"
+     type="NLog.WebViewer.LogViewerHandler, NLog.WebViewer"
+     resourcetype="Unspecified" requireaccess="Read" /&gt;
+</code>
+</body>
+</html>
